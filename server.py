@@ -12,6 +12,10 @@ from flask import Flask, jsonify, request, render_template, send_from_directory
 # Import tracker logic
 import tracker
 
+# Initialize backend DB and load curriculum on startup
+tracker.init_db()
+tracker.ensure_data_loaded()
+
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 
@@ -127,11 +131,8 @@ def export_excel():
 
 def run_mobile_server():
     """Starts the Flask server with friendly instructions."""
-    tracker.init_db()
-    tracker.ensure_data_loaded()
-
     local_ip = get_local_ip()
-    port = 5000
+    port = int(os.environ.get("PORT", 5000))
 
     print("\n" + "=" * 65)
     print("       BRAINROT RECOVERY — MOBILE APP SERVER")
