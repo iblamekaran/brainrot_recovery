@@ -1,11 +1,13 @@
-const CACHE_NAME = 'vyavastha-cache-v1';
+const CACHE_NAME = 'brainrot-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
-  '/static/manifest.json',
+  '/manifest.json',
   '/static/app.css',
   '/static/app.js',
+  '/static/favicon.png',
   '/static/icon-192.png',
-  '/static/icon-512.png'
+  '/static/icon-512.png',
+  '/static/logo.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -33,22 +35,24 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first, fall back to cache for API or offline HTML
-  if (event.request.method === 'GET') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          if (response.status === 200) {
-            const respClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, respClone);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          return caches.match(event.request);
-        })
-    );
-  }
+  // Let non-GET pass through
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const respClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, respClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cachedResponse) => {
+          return cachedResponse || (event.request.mode === 'navigate' ? caches.match('/') : null);
+        });
+      })
+  );
 });
