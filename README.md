@@ -124,3 +124,4 @@ git clone https://github.com/iblamekaran/brainrot_recovery.git
 cd brainrot_recovery
 pip install -r requirements.txt
 ```
+# brainrot_recovery
