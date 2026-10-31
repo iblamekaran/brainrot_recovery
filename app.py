@@ -6,13 +6,23 @@ A modern, purple-themed desktop application for tracking Core Java & JDBC progre
 import os
 import sys
 import datetime
-import tkinter as tk
-from tkinter import ttk, messagebox
 from pathlib import Path
-from PIL import Image, ImageTk
+
+# Expose Flask web app for WSGI servers (e.g. Render default 'gunicorn app:app')
+from server import app
 
 # Import database and export logic from tracker.py
 import tracker
+
+# Safe import for Tkinter (headless cloud environments like Render don't have _tkinter)
+try:
+    import tkinter as tk
+    from tkinter import ttk, messagebox
+    from PIL import Image, ImageTk
+    HAS_TKINTER = True
+except (ImportError, ModuleNotFoundError):
+    HAS_TKINTER = False
+    tk = None
 
 
 class PurpleTheme:
@@ -916,8 +926,14 @@ class BrainrotRecoveryDashboard:
 
 
 def main():
+    if not HAS_TKINTER:
+        print("[!] Tkinter is not installed on this system. Starting web server instead...")
+        from server import run_mobile_server
+        run_mobile_server()
+        return
+
     root = tk.Tk()
-    app = BrainrotRecoveryDashboard(root)
+    dashboard = BrainrotRecoveryDashboard(root)
     root.mainloop()
 
 
