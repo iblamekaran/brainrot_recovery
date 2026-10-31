@@ -8,6 +8,19 @@
   <em>Reclaim your focus. Master Core Java & JDBC. Defeat brainrot.</em>
 </p>
 
+<p align="center">
+  <a href="https://brainrot-recovery-1.onrender.com">
+    <img src="https://img.shields.io/badge/Live_App-Render-7C3AED?style=for-the-badge&logo=render&logoColor=white" alt="Live App on Render" />
+  </a>
+  <a href="https://github.com/iblamekaran/brainrot_recovery">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Repo" />
+  </a>
+</p>
+
+<p align="center">
+  <strong>🔗 Live Web & Mobile App:</strong> <a href="https://brainrot-recovery-1.onrender.com">https://brainrot-recovery-1.onrender.com</a>
+</p>
+
 ---
 
 > ⚡ **About This Project**:  
@@ -15,76 +28,49 @@
 
 ---
 
-## 🚀 Ways to Run
+## 📱 Live Mobile App (PWA)
 
-You can run **Brainrot Recovery** in 3 different ways:
-1. 📱 **Mobile App (PWA)**: Install directly to your smartphone (Android or iPhone) with offline capability and home screen launcher.
-2. 🖥️ **Desktop Dashboard UI**: Modern purple workspace desktop app built with Python Tkinter.
-3. 💻 **Terminal CLI**: Fast, terminal-based study tracker.
+The app is deployed live on Render with full HTTPS and offline PWA capability. You can install it straight to your phone's home screen:
 
-All 3 interfaces share the same persistent SQLite database (`brainrot_recovery.db`) and synchronize bi-directionally with your Excel roadmap (`Vyavastha_Core_Java_JDBC_Progress_Tracker.xlsx`).
+1. Open **[https://brainrot-recovery-1.onrender.com](https://brainrot-recovery-1.onrender.com)** on your smartphone.
+2. **On Android (Google Chrome)**: Tap the **📲 Install App** button on the header (or tap Chrome's menu `⋮` → **"Install app"** / **"Add to Home screen"**).
+3. **On iPhone (Safari)**: Tap the **Share icon** (square with upward arrow) → **"Add to Home Screen"**.
+4. The **Brainrot Recovery** brain logo will appear on your phone's home screen and launch in full-screen standalone mode.
 
 ---
 
-## 📱 How to Install and Run on Your Phone
+## 🚀 3 Ways to Run
 
-The mobile interface is a **Progressive Web App (PWA)** that runs full-screen without browser URL bars.
+1. 🌐 **Live Cloud App**: Visit [https://brainrot-recovery-1.onrender.com](https://brainrot-recovery-1.onrender.com) anytime from any device.
+2. 🖥️ **Desktop Dashboard UI**: Modern purple workspace desktop interface built with Python Tkinter (`python app.py`).
+3. 💻 **Terminal CLI**: Fast terminal-based study tracker (`python tracker.py`).
 
-### Step 1: Start the Server on Your PC
-Open your terminal in VS Code:
+All interfaces share persistent SQLite database tracking (`brainrot_recovery.db`) and synchronize bi-directionally with your Excel roadmap (`Vyavastha_Core_Java_JDBC_Progress_Tracker.xlsx`).
+
+---
+
+## 🖥️ How to Run Locally
+
+### 1. Clone & Install
+```bash
+git clone https://github.com/iblamekaran/brainrot_recovery.git
+cd brainrot_recovery
+pip install -r requirements.txt
+```
+
+### 2. Run Desktop UI (Tkinter)
+```bash
+python app.py
+```
+* Purple workspace dashboard theme with live metric cards (*Total Topics*, *Covered*, *In Progress*, *Needs Revision*).
+* Real-time search, filters, topic details, and Excel export.
+
+### 3. Run Mobile Server Locally
 ```bash
 python server.py
 ```
 
-Your terminal will display your local network address:
-```text
-=============================================================
-       BRAINROT RECOVERY — MOBILE APP SERVER
-=============================================================
-Computer access    : http://localhost:5000
-Phone Wi-Fi access : http://<YOUR-LOCAL-IP>:5000
-=============================================================
-```
-
-### Step 2: Open on Your Phone
-1. Connect your phone to the **same Wi-Fi network** as your computer.
-2. Open your mobile browser:
-   * **Android**: Google Chrome
-   * **iPhone**: Safari
-3. Navigate to the URL shown in your terminal (e.g. `http://192.168.1.7:5000`).
-
-### Step 3: Add to Phone Home Screen
-
-* **On Android (Google Chrome)**:
-  * Tap the **📲 Install App** button at the top (or tap Chrome's `⋮` menu).
-  * Select **"Install app"** or **"Add to Home screen"**.
-  * The **Brainrot Recovery** logo will appear in your app drawer and home screen.
-
-* **On iPhone / iPad (Safari)**:
-  * Tap the **Share icon** (square with an arrow pointing upward).
-  * Scroll down and select **"Add to Home Screen"**.
-  * Tap **"Add"**.
-
----
-
-## 🖥️ How to Run the Desktop App (Tkinter)
-
-```bash
-python app.py
-```
-
-**Features:**
-* Purple workspace dashboard theme with the brain recovery logo.
-* 4 live metric cards (*Total Topics*, *Covered*, *In Progress*, *Needs Revision*).
-* Instant search and status/technology dropdown filters.
-* Topic details panel with curriculum concepts and practical project context.
-* Status selector, one-click date stamping (`📅 Today`), and study notes editor.
-* `💾 Save Progress` and `📊 Export Excel` buttons.
-
----
-
-## 💻 How to Run the Terminal CLI
-
+### 4. Run Terminal CLI
 ```bash
 python tracker.py
 ```
@@ -95,10 +81,11 @@ python tracker.py
 
 ```text
 brainrot_recovery/
-├── server.py                                        # Mobile App server & API (Flask)
-├── app.py                                           # Desktop Graphical UI (Tkinter)
+├── server.py                                        # Mobile App server & API (Flask / Gunicorn)
+├── app.py                                           # Desktop Graphical UI (Tkinter) + WSGI bridge
 ├── tracker.py                                       # Terminal CLI Application
-├── requirements.txt                                 # Dependencies (openpyxl, Flask, Pillow)
+├── requirements.txt                                 # Dependencies (openpyxl, Flask, Pillow, gunicorn)
+├── render.yaml                                      # Render deployment configuration
 ├── README.md                                        # Documentation
 ├── brainrot_recovery.db                             # SQLite database (auto-created & synced)
 ├── Vyavastha_Core_Java_JDBC_Progress_Tracker.xlsx  # Original Excel tracker
@@ -114,14 +101,3 @@ brainrot_recovery/
 └── templates/
     └── index.html                                   # Mobile web app template
 ```
-
----
-
-## 🛠️ Quick Installation
-
-```bash
-git clone https://github.com/iblamekaran/brainrot_recovery.git
-cd brainrot_recovery
-pip install -r requirements.txt
-```
-# brainrot_recovery
