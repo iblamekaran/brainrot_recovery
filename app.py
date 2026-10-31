@@ -25,8 +25,9 @@ except (ImportError, ModuleNotFoundError):
     tk = None
 
 
-class PurpleTheme:
-    """Modern Purple Workspace Color Palette & Styles."""
+class DarkTheme:
+    """Dark Purple Workspace Theme."""
+    NAME = "dark"
     BG_DARK = "#0F0E17"          # Deep obsidian background
     BG_TOP = "#161326"           # Header top bar background
     BG_CARD = "#1C1833"          # Card and container background
@@ -50,6 +51,50 @@ class PurpleTheme:
     TEXT_LAVENDER = "#C4B5FD"    # Highlight label text
 
     FONT_FAMILY = "Segoe UI"
+
+
+class LightTheme:
+    """Clean Light Violet Workspace Theme."""
+    NAME = "light"
+    BG_DARK = "#F8FAFC"          # Clean light slate background
+    BG_TOP = "#FFFFFF"           # Header top bar background
+    BG_CARD = "#FFFFFF"          # Card and container background
+    BG_CARD_LIGHT = "#EDE9FE"    # Soft lavender container
+    BG_INPUT = "#F1F5F9"         # Input fields & text areas
+    BORDER = "#CBD5E1"           # Light slate borders
+
+    PURPLE_PRIMARY = "#7C3AED"   # Vibrant accent purple
+    PURPLE_HOVER = "#6D28D9"     # Darker purple hover
+    PURPLE_LIGHT = "#7C3AED"     # Purple text accent
+    PURPLE_GLOW = "#6D28D9"      # Purple highlight
+
+    COLOR_COVERED = "#059669"    # Emerald dark
+    COLOR_IN_PROGRESS = "#D97706"# Amber dark
+    COLOR_REVISION = "#DB2777"   # Rose dark
+    COLOR_NOT_STARTED = "#64748B"# Slate dark
+
+    TEXT_WHITE = "#0F172A"       # Main deep dark text
+    TEXT_LIGHT = "#1E293B"       # Normal body text
+    TEXT_MUTED = "#64748B"       # Subtle / placeholder text
+    TEXT_LAVENDER = "#7C3AED"    # Highlight label text
+
+    FONT_FAMILY = "Segoe UI"
+
+
+class ActiveTheme:
+    """Dynamic theme proxy that delegates attributes to DarkTheme or LightTheme."""
+    _theme = DarkTheme
+
+    @classmethod
+    def set_theme(cls, theme_cls):
+        cls._theme = theme_cls
+        for attr in dir(theme_cls):
+            if not attr.startswith("_"):
+                setattr(cls, attr, getattr(theme_cls, attr))
+
+
+ActiveTheme.set_theme(DarkTheme)
+PurpleTheme = ActiveTheme
 
 
 class BrainrotRecoveryDashboard:
@@ -212,24 +257,44 @@ class BrainrotRecoveryDashboard:
         )
         subtitle_lbl.pack(anchor=tk.W)
 
-        # Top Right: Overall Completion Bar & Percent
+        # Top Right Controls: Theme Toggle & Progress
         self.top_right_frame = tk.Frame(self.top_frame, bg=PurpleTheme.BG_TOP)
-        self.top_right_frame.pack(side=tk.RIGHT, padx=24, pady=14)
+        self.top_right_frame.pack(side=tk.RIGHT, padx=24, pady=10)
+
+        top_right_header = tk.Frame(self.top_right_frame, bg=PurpleTheme.BG_TOP)
+        top_right_header.pack(anchor=tk.E, pady=(0, 4))
 
         self.overall_pct_lbl = tk.Label(
-            self.top_right_frame,
+            top_right_header,
             text="0.0% Completed",
             font=(PurpleTheme.FONT_FAMILY, 11, "bold"),
             fg=PurpleTheme.COLOR_COVERED,
             bg=PurpleTheme.BG_TOP
         )
-        self.overall_pct_lbl.pack(anchor=tk.E, pady=(0, 4))
+        self.overall_pct_lbl.pack(side=tk.LEFT)
+
+        theme_btn_text = "☀️ Light Mode" if ActiveTheme._theme == DarkTheme else "🌙 Dark Mode"
+        self.btn_theme_toggle = tk.Button(
+            top_right_header,
+            text=theme_btn_text,
+            bg=PurpleTheme.BG_INPUT,
+            fg=PurpleTheme.PURPLE_LIGHT,
+            activebackground=PurpleTheme.BORDER,
+            activeforeground=PurpleTheme.TEXT_WHITE,
+            font=(PurpleTheme.FONT_FAMILY, 8, "bold"),
+            relief="flat",
+            cursor="hand2",
+            padx=9,
+            pady=2,
+            command=self.toggle_theme
+        )
+        self.btn_theme_toggle.pack(side=tk.LEFT, padx=(10, 0))
 
         self.top_progressbar = ttk.Progressbar(
             self.top_right_frame,
             style="Purple.Horizontal.TProgressbar",
             orient="horizontal",
-            length=220,
+            length=240,
             mode="determinate"
         )
         self.top_progressbar.pack(anchor=tk.E)
@@ -733,6 +798,24 @@ class BrainrotRecoveryDashboard:
             fg=PurpleTheme.COLOR_REVISION if is_error else PurpleTheme.COLOR_COVERED
         )
         self.root.after(3500, lambda: self.toast_lbl.config(text=""))
+
+    def toggle_theme(self):
+        """Switches between Dark Mode and Light Mode."""
+        if ActiveTheme._theme == DarkTheme:
+            ActiveTheme.set_theme(LightTheme)
+        else:
+            ActiveTheme.set_theme(DarkTheme)
+
+        self.root.configure(bg=PurpleTheme.BG_DARK)
+        # Destroy current container frames
+        for widget in [self.top_frame, self.cards_frame, self.body_frame]:
+            widget.destroy()
+
+        # Re-apply styles and rebuild UI
+        self._configure_styles()
+        self._build_ui()
+        self._load_dashboard_metrics()
+        self._populate_table()
 
     def _reset_filters(self):
         """Clears search and dropdown filters."""

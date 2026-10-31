@@ -16,6 +16,14 @@
 
   <!-- Mobile Stylesheet -->
   <link rel="stylesheet" href="/static/app.css">
+
+  <!-- Immediate Theme Initializer -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('brainrot_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
 </head>
 <body>
 
@@ -29,6 +37,9 @@
       </div>
     </div>
     <div class="header-actions">
+      <button id="btnThemeToggle" class="btn-header" title="Toggle Dark/Light Mode">
+        <span id="themeIcon">☀️</span>
+      </button>
       <button id="btnInstall" class="btn-header btn-install" style="display: none;">
         📲 Install App
       </button>

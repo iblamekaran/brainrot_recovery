@@ -28,6 +28,14 @@
 
 ---
 
+## 🎨 Themes: Dark & Light Mode
+
+* 🌙 **Dark Mode (Default)**: Deep obsidian & purple workspace aesthetic built for deep focus and late-night coding sessions.
+* ☀️ **Light Mode**: Clean, crisp lavender & slate daylight aesthetic.
+* 💾 **Smart Persistence**: Your theme selection is automatically saved in `localStorage` across visits and app launches.
+
+---
+
 ## 📱 Live Mobile App (PWA)
 
 The app is deployed live on Render with full HTTPS and offline PWA capability. You can install it straight to your phone's home screen:

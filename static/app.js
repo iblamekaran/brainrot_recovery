@@ -11,6 +11,36 @@ if ('serviceWorker' in navigator) {
 let deferredPrompt = null;
 const btnInstall = document.getElementById('btnInstall');
 
+// Theme Switcher Logic
+const btnThemeToggle = document.getElementById('btnThemeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('brainrot_theme', theme);
+  if (themeIcon) {
+    themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+    btnThemeToggle.title = theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+  }
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    metaTheme.setAttribute('content', theme === 'light' ? '#FFFFFF' : '#7C3AED');
+  }
+}
+
+// Sync initial icon state
+const activeTheme = localStorage.getItem('brainrot_theme') ||
+  (document.documentElement.getAttribute('data-theme') || 'dark');
+applyTheme(activeTheme);
+
+if (btnThemeToggle) {
+  btnThemeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const nextTheme = current === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+  });
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
