@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Brainrot Recovery — Study Tracker</title>
+
+  <!-- PWA Metadata & Mobile Icons -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#7C3AED">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Brainrot">
+  <link rel="apple-touch-icon" href="/static/icon-192.png">
+  <link rel="icon" type="image/png" href="/static/favicon.png">
+
+  <!-- Mobile Stylesheet -->
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+
+  <!-- Sticky Mobile Header with Logo -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <img src="/static/logo.png" alt="Brainrot Recovery Logo" class="brand-logo-img">
+      <div>
+        <div class="brand-title">Brainrot Recovery</div>
+        <div class="brand-sub">Reclaim Your Focus · Study Tracker</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btnInstall" class="btn-header btn-install" style="display: none;">
+        📲 Install App
+      </button>
+      <button id="btnExportExcel" class="btn-header">
+        📊 Sync Excel
+      </button>
+    </div>
+  </header>
+
+  <!-- Dashboard Overview / Metric Cards -->
+  <section class="summary-container">
+    <div class="overall-progress-card">
+      <div class="progress-header">
+        <span class="progress-title">Overall Focus Progress</span>
+        <span id="overallPct" class="progress-pct-badge">0.0%</span>
+      </div>
+      <div class="progress-track">
+        <div id="overallProgressFill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- 4 Metric Cards -->
+    <div class="cards-grid">
+      <div class="metric-card card-total">
+        <div class="card-label">Total Topics</div>
+        <div id="valTotal" class="card-val">65</div>
+        <div class="card-sub">Curriculum Roadmap</div>
+      </div>
+
+      <div class="metric-card card-covered">
+        <div class="card-label">Covered</div>
+        <div id="valCovered" class="card-val">0</div>
+        <div id="subCovered" class="card-sub">0.0% completed</div>
+      </div>
+
+      <div class="metric-card card-inprog">
+        <div class="card-label">In Progress</div>
+        <div id="valInProg" class="card-val">0</div>
+        <div class="card-sub">Currently studying</div>
+      </div>
+
+      <div class="metric-card card-revision">
+        <div class="card-label">Needs Revision</div>
+        <div id="valRev" class="card-val">0</div>
+        <div id="subRev" class="card-sub">65 not started</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search and Filtering -->
+  <section class="controls-container">
+    <!-- Live Search -->
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search topics, concepts, notes...">
+    </div>
+
+    <!-- Technology Selector -->
+    <div class="tech-segmented">
+      <div class="tech-tab active" data-tech="All">All Tech</div>
+      <div class="tech-tab" data-tech="Core Java">Core Java</div>
+      <div class="tech-tab" data-tech="JDBC">JDBC</div>
+    </div>
+
+    <!-- Status Filter Chips -->
+    <div class="chips-scroll" style="margin-top: 10px;">
+      <div class="filter-chip active" data-status="All">All</div>
+      <div class="filter-chip" data-status="Not Started">Not Started</div>
+      <div class="filter-chip" data-status="In Progress">In Progress</div>
+      <div class="filter-chip" data-status="Covered">Covered</div>
+      <div class="filter-chip" data-status="Needs Revision">Needs Revision</div>
+    </div>
+  </section>
+
+  <!-- Topics Feed -->
+  <main class="topics-container">
+    <div class="section-counter">
+      <span id="topicCount">Loading topics...</span>
+      <span>Tap a topic to edit</span>
+    </div>
+    <div id="topicsList">
+      <!-- Injected by JavaScript -->
+    </div>
+  </main>
+
+  <!-- Modal Bottom Sheet for Topic Editing -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="bottom-sheet">
+      <div class="sheet-handle"></div>
+
+      <div class="sheet-header">
+        <div>
+          <div id="modalTech" style="font-size: 11px; font-weight: 700; color: var(--purple-light); text-transform: uppercase;"></div>
+          <div id="modalSheetTitle" class="sheet-title">Topic Title</div>
+        </div>
+        <button id="btnCloseModal" class="btn-close">✕</button>
+      </div>
+
+      <!-- Curriculum Details -->
+      <div class="context-box">
+        <div class="context-lbl">Section</div>
+        <div id="modalSection" class="context-val">Section Name</div>
+      </div>
+
+      <div class="context-box">
+        <div class="context-lbl">Subtopics & Concepts</div>
+        <div id="modalConcepts" class="context-val">Concept details</div>
+      </div>
+
+      <div class="context-box">
+        <div class="context-lbl">Application Context</div>
+        <div id="modalApp" class="context-val">Application context</div>
+      </div>
+
+      <!-- Status Selection -->
+      <div class="form-group">
+        <label class="form-label">Update Status</label>
+        <div class="status-grid">
+          <button type="button" class="status-btn" data-status="Not Started">Not Started</button>
+          <button type="button" class="status-btn" data-status="In Progress">In Progress</button>
+          <button type="button" class="status-btn" data-status="Covered">Covered</button>
+          <button type="button" class="status-btn" data-status="Needs Revision">Needs Revision</button>
+        </div>
+      </div>
+
+      <!-- Date Covered -->
+      <div class="form-group">
+        <label class="form-label">Date Covered</label>
+        <div class="date-row">
+          <input type="text" id="modalDateInput" class="date-input" placeholder="YYYY-MM-DD">
+          <button type="button" id="btnToday" class="btn-today">📅 Today</button>
+        </div>
+      </div>
+
+      <!-- Practice Notes -->
+      <div class="form-group">
+        <label class="form-label">Practice Notes / Code Comments</label>
+        <textarea id="modalNotesInput" class="notes-textarea" placeholder="Add your study notes, insights, or code references..."></textarea>
+      </div>
+
+      <button id="btnSaveModal" class="btn-save-modal">Save Progress</button>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">Progress saved!</div>
+
+  <!-- Mobile Scripts -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
